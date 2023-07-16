@@ -1,0 +1,59 @@
+---
+  - name: Working with AWS EC2 Instance
+    hosts: localhost
+    connection: local
+    vars:
+      keypair: Splunk
+
+    tasks:
+      - name: Setting up Security Group
+        amazon.aws.ec2_security_group:
+          name: AWS_security_grp
+          description: rules allowing traffic on port 22, 443 and 80
+          aws_access_key: AKIA3VVCGHMEXDM2DGBG
+          aws_secret_key: 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 
+          region: us-east-1
+          rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 443
+            to_port: 443
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0
+          - proto: all
+            cidr_ip: 0.0.0.0/0
+      - amazon.aws.s3_bucket:
+          name: random7895674
+          state: present
+      - name: Create EC2 instance
+        amazon.aws.ec2_instance:
+          key_name: "{{ keypair }}"
+          name: "{{ item }}"
+          aws_access_key: AKIA3VVCGHMEXDM2DGBG
+          aws_secret_key: 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         
+          region: us-east-1
+          instance_type: t2.micro
+          image_id: ami-06b09bfacae1453cb
+          wait: yes
+          wait_timeout: 200
+          security_groups: AWS_security_grp
+          user_data: |
+                      #!/bin/bash
+                      sudo apt-get install python3 
+                      sudo su
+                      cd /opt
+                      wget -O splunk-9.1.0.1-77f73c9edb85-Linux-x86_64.tgz https://download.splunk.com/products/splunk/releases/9.1.0.1/linux/splunk-9.1.0.1-77f73c9edb85-Linux-x86_64.tgz
+                      tar xvzf splunk-9.1.0.1-77f73c9edb85-Linux-x86_64.tgz
+        with_items:
+          - KV - idx1
+          - KV - idx2
+          - KV - idx3
+          - KV - idx4
+          - KV - sh1
+          - KV - sh2
