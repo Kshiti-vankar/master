@@ -10,8 +10,8 @@
         amazon.aws.ec2_security_group:
           name: AWS_security_grp
           description: rules allowing traffic on port 22, 443 and 80
-          aws_access_key: AKIA3VVCGHMEXDM2DGBG
-          aws_secret_key: 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 
+          aws_access_key: AKIA3VVCGHMEYYBRFXFD
+          aws_secret_key: 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
           region: us-east-1
           rules:
           - proto: tcp
